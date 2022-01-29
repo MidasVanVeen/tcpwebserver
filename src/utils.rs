@@ -16,6 +16,9 @@ pub fn parse_args() -> Result<HashMap<String, String>, String> {
             "-p" | "--port" => {
                 res.entry(String::from("port")).or_insert(args[i+1].to_string());
             },
+            "-t" | "--threads" | "--threadcount" => {
+                res.entry(String::from("threadcount")).or_insert(args[i+1].to_string());
+            },
             _ => (),
         }   
     }
@@ -26,6 +29,10 @@ pub fn parse_args() -> Result<HashMap<String, String>, String> {
     match res.get("port") {
         Some(_) => (),
         None => return Err("No port specified".to_string()),
+    }
+    match res.get("threadcount") {
+        Some(_) => (),
+        None => return Err("No threadcount specified".to_string()),
     }
     Ok(res)
 }
@@ -48,8 +55,8 @@ pub fn parse_request(buffer: &[u8]) -> Result<HashMap<String, String>, String> {
             match capture.split("?").nth(1) {
                 Some(m) => {
                     hashmap.insert("data".to_string(), (&m).to_string());
+                    println!("{}", m);
                     capture = capture.replace(format!("?{}",m).as_str(), "");
-                    println!("///{}///",capture);
                 }
                 None => (),
             }
@@ -63,25 +70,35 @@ pub fn parse_request(buffer: &[u8]) -> Result<HashMap<String, String>, String> {
         }
     }
 
-    match bufferstring.split("?").nth(1) {
-        Some(s) => {
-            hashmap.insert("data".to_string(), s.to_string());
-        }
-        None => (),
-    }
     Ok(hashmap)
 }
 
-pub fn get_file(filename: &str) -> Option<String> {
+pub fn get_file(filename: &str) -> Result<String, String> {
     let mut contents = String::new();
     match File::open(format!("webfiles/{}", filename)) {
         Ok(mut f) => {
             f.read_to_string(&mut contents).unwrap();
         }
         Err(_) => {
-            return None;
+            return Err("Could not find file".to_string());
         },
     }
+    let contentstwo = contents.clone();
+    match Regex::new("\\{\\{.*\\}\\}").unwrap().captures(&contentstwo) {
+        Some(a) => {
+            for capture in a.iter() {
+                let mut cap = capture.unwrap().as_str().replace("{{ ", "");
+                cap = cap.replace(" }}", "");
+                contents = contents.replace(capture.unwrap().as_str(), match get_file(cap.as_str()) {
+                    Ok(s) => s,
+                    Err(..) => {
+                        return Err("Could not find file specified inside file".to_string());
+                    }
+                }.as_str())
+            }
+        }
+        None => (),
+    }
     //println!("{}", contents.as_str());
-    Some(contents)
+    Ok(contents)
 }

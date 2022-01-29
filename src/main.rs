@@ -1,6 +1,7 @@
 extern crate tcpwebserver;
 use tcpwebserver::threading::*;
 use tcpwebserver::utils::*;
+use tcpwebserver::logger::*;
 
 use std::io::prelude::*;
 use std::net::{TcpListener, TcpStream};
@@ -23,7 +24,7 @@ fn main() {
         }
     };
 
-    let pool = ThreadPool::new(200);
+    let pool = ThreadPool::new(arguments.get("threadcount").unwrap().parse::<usize>().unwrap());
 
     for stream in listener.incoming() {
         let stream = stream.expect("Could not read incoming streams from listener");
@@ -41,10 +42,11 @@ fn handle_connection(mut stream: TcpStream) -> Result<(), String> {
         Ok(..) => (),
         Err(..) => {return Err("Could not read from stream".to_string());},
     }
+    let logfilename = create_logfile()?;
+    log_request(&buffer, logfilename.as_str())?;
     let parsed_request = parse_request(&buffer)?;
     let response = get_response(parsed_request)?;
 
-    // TODO: Log request and sent data
     stream.write(response.as_bytes()).unwrap();
     stream.flush().unwrap();
 
@@ -52,23 +54,26 @@ fn handle_connection(mut stream: TcpStream) -> Result<(), String> {
 }
 
 fn get_response(hashmap: HashMap<String, String>) -> Result<String, String> {
-    let mut response = String::from("HTTP/1.1 200 OK\r\n\r\n");
-    response.push_str(match hashmap.get("URI") {
-        Some(s) => match s.as_str() {
-            "/index.html" | "/home" => match get_file("index.html") {
-                Some(v) => v,
-                None => {
-                    return Err("Could not open file".to_string());
-                }
-            },
-            _ => match get_file("404.html") {
-                Some(v) => v,
-                None => "".to_string(),
-            },
+    let mut response = String::new();
+    let mut header = String::new();
+    let htmlfile = match hashmap.get("URI") {
+        Some(s) => {
+            match get_file(s) {
+                Ok(v) => {
+                    header.push_str("HTTP/1.1 200 OK\r\n\r\n");
+                    v
+                },
+                Err(..) => {
+                    header.push_str("HTTP/1.1 404 Not Found\r\n\r\n");
+                    "".to_string()           
+                },
+            }
         },
         None => {
             return Err("Could not find URI".to_string());
         }
-    }.as_str());
+    };
+    response.push_str(header.as_str());
+    response.push_str(htmlfile.as_str());
     Ok(response)
 }
