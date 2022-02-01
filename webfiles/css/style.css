@@ -22,3 +22,27 @@ header a:hover {
 	background-color: white;
 	color: black;
 }
+
+footer {
+	background-color: black;
+	display: flex;
+	flex-direction: column;
+	padding: 20px;
+	height: 100px;
+}
+
+footer a {
+	color: white;
+	text-decoration: none;
+	padding: 5px;
+	margin: 10px;
+}
+
+footer a:hover {
+	background-color: white;
+	color: black; 
+}
+
+article {
+	margin: 20px;
+}

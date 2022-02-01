@@ -28,7 +28,6 @@ fn main() {
 
     for stream in listener.incoming() {
         let stream = stream.expect("Could not read incoming streams from listener");
-        // TODO: log connection
         pool.execute(|| match handle_connection(stream) {
             Ok(()) => (),
             Err(s) => {eprintln!("The following error occured: {}", s);},
@@ -37,35 +36,37 @@ fn main() {
 }
 
 fn handle_connection(mut stream: TcpStream) -> Result<(), String> {
-    let mut buffer = [0; 512];
+    let mut buffer = [0; 1024];
     match stream.read(&mut buffer) {
         Ok(..) => (),
         Err(..) => {return Err("Could not read from stream".to_string());},
     }
-    let logfilename = create_logfile()?;
-    log_request(&buffer, logfilename.as_str())?;
+
     let parsed_request = parse_request(&buffer)?;
     let response = get_response(parsed_request)?;
+    let logfilename = create_logfile()?;
+    log_request(&buffer, logfilename.as_str())?;
 
-    stream.write(response.as_bytes()).unwrap();
+    stream.write(&response).unwrap();
     stream.flush().unwrap();
 
     Ok(())
 }
 
-fn get_response(hashmap: HashMap<String, String>) -> Result<String, String> {
-    let mut response = String::new();
-    let mut header = String::new();
-    let htmlfile = match hashmap.get("URI") {
+#[allow(unused_assignments)]
+fn get_response(hashmap: HashMap<String, String>) -> Result<Vec<u8>, String> {
+    let mut response = Vec::new();
+    let mut header = Vec::new();
+    let file: Vec<u8> = match hashmap.get("URI") {
         Some(s) => {
-            match get_file(s) {
-                Ok(v) => {
-                    header.push_str("HTTP/1.1 200 OK\r\n\r\n");
-                    v
+            match get_file(s, hashmap.get("data").unwrap_or(&"".to_string())) {
+                Ok(b) => {
+                    header = "HTTP/1.1 200 OK\r\n\r\n".as_bytes().to_vec();
+                    b
                 },
                 Err(..) => {
-                    header.push_str("HTTP/1.1 404 Not Found\r\n\r\n");
-                    "".to_string()           
+                    header = "HTTP/1.1 404 Not Found\r\n\r\n".as_bytes().to_vec();
+                    "".as_bytes().to_vec()
                 },
             }
         },
@@ -73,7 +74,7 @@ fn get_response(hashmap: HashMap<String, String>) -> Result<String, String> {
             return Err("Could not find URI".to_string());
         }
     };
-    response.push_str(header.as_str());
-    response.push_str(htmlfile.as_str());
+    response.extend(header.iter().cloned());
+    response.extend(file.iter().cloned());
     Ok(response)
 }
