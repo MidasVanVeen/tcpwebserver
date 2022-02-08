@@ -1,19 +1,13 @@
 const canvas = document.getElementById("canvas")
 const canvasContext = canvas.getContext('2d')
 
-window.onload = () => {
-    gameLoop()
-}
-
 var intervalid;
-function gameLoop() {
-    intervalid = setInterval(show, 1000/15) // here 15 is our fps value
-}
-
-function show() {
-    update()
-    draw()
-	checkGameOver()
+window.onload = () => {
+    intervalid = setInterval(() => {
+		update()
+		draw()
+		checkGameOver()
+	}, 1000/15)
 }
 
 function checkGameOver() {
@@ -139,10 +133,9 @@ class Snake {
 
 class Apple{
     constructor(){
-        let isTouching
-        
-        while (true) {
-            isTouching = false;
+        let isTouching = true
+        while (isTouching) {
+			isTouching = false
             this.x = Math.floor(Math.random() * canvas.width / snake.size) * snake.size
             this.y = Math.floor(Math.random() * canvas.height / snake.size) * snake.size
             
@@ -154,10 +147,6 @@ class Apple{
 
             this.size = snake.size
             this.color = "red"
-
-            if (!isTouching) {
-                break;
-            }
         }
     }
 }
