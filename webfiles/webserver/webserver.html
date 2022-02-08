@@ -11,7 +11,7 @@
 		
 		<div class="main">
 			<article>
-				<h1>De custom webserver - Midas</h1>
+				<h1>De custom webserver</h1>
 				<p>Onze webserver is zelf gemaakt, d.m.v de rust standard library.</p>
 				<p>We hebben ook gebruik gemaakt van een paar externe libraries. Hieronder is een lijst van die libraries.</p>
 				<ul>
@@ -26,7 +26,7 @@
 				<p>De webserver is zo gemaakt dat het meerdere connecties tegelijk aan kan. Wanneer een thread klaar is met zijn taak zal deze weer beschikbaar zijn voor een andere connectie. Wanneer je met threads werkt is het belangrijk om niet het systeem te overloaden door teveel threads aan te maken, hierom heb ik ingesteld dat er maar een maximaal aantal threads beschikbaar is voor het programma. Dit word bij het starten van het programma gezet met de '-t' of '--threads' optie</p>
 				<h3>Modulaire bestanden</h3>
 				<p>Ik heb een speciale functie in de webserver geprogrammeerd. Wanneer de parser een bestandsnaam vind tussen dubbele brackets, bvb '{​{ eenbestand.html }}', zal dit vervangen worden voor de inhoud van dat bestand.</p>
-				<p>Hiermee is het mogenlijk om stukken html voor meerdere paginas te gebruiken. Zo hebben wij voor alle sites maar 1 keer een header en een footer moeten maken.</p>
+				<p>Hiermee is het mogenlijk om stukken html voor meerdere paginas te gebruiken. Zo hebben wij voor alle paginas maar 1 keer een header en een footer moeten maken.</p>
 				<h3>Logging</h3>
 				<p>De webserver slaat alle inkomende requests op samen met de tijd waarop ze zijn binnengekomen. Dit zorgt voor verhoogde veiligheid van de webserver.</p>
 				<h3>Get requests</h3>
