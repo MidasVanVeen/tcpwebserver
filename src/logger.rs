@@ -1,3 +1,6 @@
+// Author: Midas
+// Code voor het loggen van requests en get data
+
 extern crate uuid;
 use uuid::Uuid;
 

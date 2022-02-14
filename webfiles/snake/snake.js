@@ -34,7 +34,7 @@ function update() {
     canvasContext.clearRect(0, 0, canvas.width, canvas.height)
     snake.move()
     eatApple()
-    checkHitWall()
+    checkHit()
 }
 
 function eatApple() {
@@ -45,8 +45,14 @@ function eatApple() {
         }
 }
 
-function checkHitWall() {
+function checkHit() {
     let headTail = snake.tail[snake.tail.length -1]
+
+	for (let i = 0; i < snake.tail.length - 1; i++) {
+		if (snake.tail[i] = headTail) {
+			console.log("died")
+		}
+	}
 
     if (headTail.x == - snake.size) {
         headTail.x = canvas.width - snake.size
@@ -131,6 +137,7 @@ class Snake {
                 y: this.tail[this.tail.length - 1].y - this.size
             }
         }
+
 
         this.tail.shift()
         this.tail.push(newRect)

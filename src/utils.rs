@@ -1,3 +1,6 @@
+// Author: Midas
+// Utility code
+
 extern crate regex;
 
 use regex::Regex;

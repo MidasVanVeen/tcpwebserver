@@ -1,6 +1,9 @@
+// Author: Midas
+// Main code voor de webserver
+
 extern crate tcpwebserver;
 use tcpwebserver::logger::*;
-use tcpwebserver::threading::*;
+use tcpwebserver::threading::*; // Vrijwel compleet gekopieerd van het boek "the rust programming language"
 use tcpwebserver::utils::*;
 
 use std::collections::HashMap;

@@ -1,3 +1,6 @@
+// Author: Metehan & Midas
+// front end code voor de online boter kaas en eieren game
+
 const canvas = document.getElementById("canvas")
 const canvasContext = canvas.getContext('2d')
 const BLOCKSIZE = 400/3
@@ -107,7 +110,6 @@ function draw() {
 
 window.addEventListener('click', (e) => {
 	if (e.button == 0) {
-		console.log("clicked")
 		move(e.offsetX, e.offsetY)
 	}
 })
