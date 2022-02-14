@@ -8,9 +8,15 @@
 	</head>
 	<body>
 		{{ /modules/header.html }}
+		<form action="javascript:void(0);" id="form">
+			name: <input type="text" id="name_input">
+			room: <input type="text" id="roomcode_input">
+			<button onclick="start()" type="submit">start</button>
+		</form>
 		{{ /modules/canvas.html }}
 		<script>
 			{{ /sockettest/main.js }}
 		</script>
+		<h2 id="message"></h2>
 	</body>
 </html>

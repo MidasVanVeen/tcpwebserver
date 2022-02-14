@@ -1,22 +1,26 @@
 extern crate tcpwebserver;
+use tcpwebserver::logger::*;
 use tcpwebserver::threading::*;
 use tcpwebserver::utils::*;
-use tcpwebserver::logger::*;
 
+use std::collections::HashMap;
 use std::io::prelude::*;
 use std::net::{TcpListener, TcpStream};
-use std::collections::HashMap;
 
 fn main() {
     let arguments = match parse_args() {
         Ok(h) => h,
         Err(s) => {
             eprintln!("The following error occured: {}", s);
-            return; 
+            return;
         }
     };
 
-    let listener = match TcpListener::bind(format!("{}:{}", arguments.get("ip").unwrap(), arguments.get("port").unwrap())) {
+    let listener = match TcpListener::bind(format!(
+        "{}:{}",
+        arguments.get("ip").unwrap(),
+        arguments.get("port").unwrap()
+    )) {
         Ok(l) => l,
         Err(..) => {
             eprintln!("Error creating listener; aborting!");
@@ -24,13 +28,21 @@ fn main() {
         }
     };
 
-    let pool = ThreadPool::new(arguments.get("threadcount").unwrap().parse::<usize>().unwrap());
+    let pool = ThreadPool::new(
+        arguments
+            .get("threadcount")
+            .unwrap()
+            .parse::<usize>()
+            .unwrap(),
+    );
 
     for stream in listener.incoming() {
         let stream = stream.expect("Could not read incoming streams from listener");
         pool.execute(|| match handle_connection(stream) {
             Ok(()) => (),
-            Err(s) => {eprintln!("The following error occured: {}", s);},
+            Err(s) => {
+                eprintln!("The following error occured: {}", s);
+            }
         });
     }
 }
@@ -39,7 +51,9 @@ fn handle_connection(mut stream: TcpStream) -> Result<(), String> {
     let mut buffer = [0; 1024];
     match stream.read(&mut buffer) {
         Ok(..) => (),
-        Err(..) => {return Err("Could not read from stream".to_string());},
+        Err(..) => {
+            return Err("Could not read from stream".to_string());
+        }
     }
 
     let parsed_request = parse_request(&buffer)?;
@@ -58,16 +72,14 @@ fn get_response(hashmap: HashMap<String, String>) -> Result<Vec<u8>, String> {
     let mut response = Vec::new();
     let mut header = Vec::new();
     let file: Vec<u8> = match hashmap.get("URI") {
-        Some(s) => {
-            match get_file(s, hashmap.get("data").unwrap_or(&"".to_string())) {
-                Ok(b) => {
-                    header = "HTTP/1.1 200 OK\r\n\r\n".as_bytes().to_vec();
-                    b
-                },
-                Err(..) => {
-                    header = "HTTP/1.1 404 Not Found\r\n\r\n".as_bytes().to_vec();
-                    "".as_bytes().to_vec()
-                },
+        Some(s) => match get_file(s, hashmap.get("data").unwrap_or(&"".to_string())) {
+            Ok(b) => {
+                header = "HTTP/1.1 200 OK\r\n\r\n".as_bytes().to_vec();
+                b
+            }
+            Err(..) => {
+                header = "HTTP/1.1 404 Not Found\r\n\r\n".as_bytes().to_vec();
+                "".as_bytes().to_vec()
             }
         },
         None => {

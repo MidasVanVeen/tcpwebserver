@@ -1,8 +1,10 @@
 const canvas = document.getElementById("canvas")
 const canvasContext = canvas.getContext('2d')
 
+var name = document.getElementById('name_input').value
+
 var intervalid;
-window.onload = () => {
+function start() {
     intervalid = setInterval(() => {
 		update()
 		draw()
@@ -22,6 +24,10 @@ function drawGameOver() {
     canvasContext.font = "25px Arial"
     canvasContext.fillStyle = "black"
     canvasContext.fillText("JE HEBT HET UITGESPEELD!!",canvas.width / 11, canvas.height / 2)
+	var connection = new WebSocket('ws://127.0.0.1:7777');
+	connection.onopen = () => {
+		connection.send(name + ",99,snake")
+	}
 }
 
 function update() {

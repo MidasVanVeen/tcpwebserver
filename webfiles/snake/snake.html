@@ -12,6 +12,10 @@
 			<article>
 				<h1>Snake - Metehan</h1>
 				{{ /modules/canvas.html }}
+				<form action="javascript:void(0);" id="form">
+					<input type="text" id="name_input">
+					<button onclick="start()" type="submit">start</button>
+				</form>
 				<script>
 					{{ /snake/snake.js }}
 				</script>
@@ -19,7 +23,8 @@
 				<ul>
 					<li>Javascript</li>
 					<li>HTMLdom</li>
-					<li>htnl canvas</li>
+					<li>html canvas</li>
+					<li>Websockets voor de highscores</li>
 				</ul>
 			</article>
 		</div>
