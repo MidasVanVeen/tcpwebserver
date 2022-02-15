@@ -1,34 +1,30 @@
+// Author: Metehan
+// Code voor de snake game
+
+// maak constanten aan voor interactie met het canvas
 const canvas = document.getElementById("canvas")
 const canvasContext = canvas.getContext('2d')
 
+// Andere constanten
+const FPS = 15 
+
+// de naam die de speler heeft ingevoerd voor het spelen (voor highscores)
 var name = document.getElementById('name_input').value
+
+var gameover
 
 var intervalid;
 function start() {
     intervalid = setInterval(() => {
+		// de main loop. dit draait elk frame
 		update()
 		draw()
-		checkGameOver()
-	}, 1000/15)
+	}, 1000/FPS)
 }
 
-function checkGameOver() {
-	if (snake.tail.length >= 99) {
-		clearInterval(intervalid)
-		drawGameOver()
-	}
-}
-
-function drawGameOver() {
-    createRect(0,0,canvas.width, canvas.height, "white")
-    canvasContext.font = "25px Arial"
-    canvasContext.fillStyle = "black"
-    canvasContext.fillText("JE HEBT HET UITGESPEELD!!",canvas.width / 11, canvas.height / 2)
-	var connection = new WebSocket('ws://127.0.0.1:7777');
-	connection.onopen = () => {
-		connection.send(name + ",99,snake")
-	}
-}
+// =======================================================================
+// ==== Updating =========================================================
+// =======================================================================
 
 function update() {
     canvasContext.clearRect(0, 0, canvas.width, canvas.height)
@@ -40,7 +36,7 @@ function update() {
 function eatApple() {
     if(snake.tail[snake.tail.length - 1].x == apple.x &&
         snake.tail[snake.tail.length - 1].y == apple.y){
-            snake.tail[snake.tail.length] = {x:apple.x, y: apple.y}
+            snake.tail[snake.tail.length] = {x:apple.x, y:apple.y}
             apple = new Apple();
         }
 }
@@ -48,22 +44,20 @@ function eatApple() {
 function checkHit() {
     let headTail = snake.tail[snake.tail.length -1]
 
-	for (let i = 0; i < snake.tail.length - 1; i++) {
-		if (snake.tail[i] = headTail) {
-			console.log("died")
-		}
-	}
-
     if (headTail.x == - snake.size) {
-        headTail.x = canvas.width - snake.size
+		gameOver()
     } else if (headTail.x == canvas.width) {
-        headTail.x = 0
+		gameOver()
     } else if (headTail.y == - snake.size) {
-        headTail.y = canvas.height - snake.size
+		gameOver()
     } else if (headTail.y == canvas.height) {
-        headTail.y = 0 
+		gameOver()
     }
 }
+
+// =======================================================================
+// ==== drawing ==========================================================
+// =======================================================================
 
 function draw() {
     createRect(0,0,canvas.width, canvas.height, "green")
@@ -78,12 +72,42 @@ function draw() {
     canvasContext.fillStyle = "white"
     canvasContext.fillText("Score: " + (snake.tail.length -1),canvas.width - 120, 18)
     createRect(apple.x, apple.y, apple.size, apple.size, apple.color)
+	if (gameover) {
+		drawGameOver()
+	}
+}
+
+function drawGameOver() {
+	console.log("here i am")
+    createRect(0,0,canvas.width, canvas.height, "white")
+    canvasContext.font = "25px Arial"
+    canvasContext.fillStyle = "black"
+    canvasContext.fillText("Game Over",canvas.width / 4, canvas.height / 2)
 }
 
 function createRect(x,y,width, height,color) {
     canvasContext.fillStyle = color
     canvasContext.fillRect(x, y, width, height)
 }
+
+
+// =======================================================================
+// ==== other functions ==================================================
+// =======================================================================
+
+function gameOver() {
+	var connection = new WebSocket('ws://86.87.226.14:7777');
+	connection.onopen = () => {
+		connection.send(name + "," + snake.tail.length + ",snake")
+	}
+	gameover = true
+	clearInterval(intervalid)
+}
+
+
+// =======================================================================
+// ==== input listener ===================================================
+// =======================================================================
 
 window.addEventListener("keydown", (event) => {
     setTimeout(() => {
@@ -102,6 +126,10 @@ window.addEventListener("keydown", (event) => {
         }
     }, 1)
 })
+
+// =======================================================================
+// ==== snake class ======================================================
+// =======================================================================
 
 class Snake {
     constructor(x, y, size) {
@@ -144,6 +172,10 @@ class Snake {
     }
 }
 
+// =======================================================================
+// ==== apple class ======================================================
+// =======================================================================
+
 class Apple{
     constructor(){
         let isTouching = true
@@ -164,5 +196,6 @@ class Apple{
     }
 }
 
+// creating initial snake and apple
 const snake = new Snake(20,20,20);
 let apple = new Apple();

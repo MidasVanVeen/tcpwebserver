@@ -1,11 +1,11 @@
 // Author: Metehan & Midas
-// front end code voor de online boter kaas en eieren game
+// front-end code voor de online boter kaas en eieren game
 
 const canvas = document.getElementById("canvas")
 const canvasContext = canvas.getContext('2d')
 const BLOCKSIZE = 400/3
 
-var connection = new WebSocket('ws://127.0.0.1:4444',[])
+var connection = new WebSocket('ws://86.87.226.14:4444',[])
 var name, roomcode, grid, turn, winner, winarr
 
 connection.onmessage = function(e){
@@ -21,6 +21,10 @@ connection.onmessage = function(e){
 	}
 }
 
+function sleep(ms) {
+	return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 function start() {
 	document.getElementById("form").style.display = "none"
 	name = document.getElementById("name_input").value
@@ -29,11 +33,14 @@ function start() {
 	connection.send("join," + roomcode + "," + name)
 	setInterval(() => {
 		connection.send("get," + roomcode)
+		
 		draw()
 		if (winner) {
-			new Promise(r => setTimeout(r, 2000)).then(()=> {
-				location.reload()
-			});
+			grid = [[0,0,0],[0,0,0],[0,0,0]]
+			winner = false
+			winarr = []
+			turn = ''
+			sleep(3000).then(()=>{start()})
 		}
 	}, 1000/30);
 }
@@ -64,8 +71,8 @@ function draw() {
 		}
 		if (winarr[2] == 2) {
 			canvasContext.beginPath()
-			canvasContext.moveTo(400,400)
-			canvasContext.lineTo(0,0)
+			canvasContext.moveTo(400,0)
+			canvasContext.lineTo(0,400)
 			canvasContext.strokeStyle = "Black"
 			canvasContext.stroke()
 		}
