@@ -9,12 +9,10 @@ const canvasContext = canvas.getContext('2d')
 const FPS = 15 
 
 // de naam die de speler heeft ingevoerd voor het spelen (voor highscores)
-var name = document.getElementById('name_input').value
+var name, gameover, intervalid;
 
-var gameover
-
-var intervalid;
 function start() {
+    name = document.getElementById('name_input').value
     intervalid = setInterval(() => {
 		// de main loop. dit draait elk frame
 		update()
