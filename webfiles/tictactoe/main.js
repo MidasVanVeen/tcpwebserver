@@ -1,12 +1,24 @@
-// Author: Metehan & Midas
+// Author: Metehan (meeste) & Midas
 // front-end code voor de online boter kaas en eieren game
+
+// ======================================================
+// ==== constanten ======================================
+// ======================================================
 
 const canvas = document.getElementById("canvas")
 const canvasContext = canvas.getContext('2d')
 const BLOCKSIZE = 400/3
 
-var connection = new WebSocket('ws://86.87.226.14:4444',[])
+// ======================================================
+// ==== globale vars ====================================
+// ======================================================
+
+var connection = new WebSocket('ws://127.0.0.1:4444',[])
 var name, roomcode, grid, turn, winner, winarr
+
+// ======================================================
+// ==== message handling ================================
+// ======================================================
 
 connection.onmessage = function(e){
    	var server_message = e.data
@@ -25,25 +37,34 @@ function sleep(ms) {
 	return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+// ======================================================
+// ==== main functie ====================================
+// ======================================================
+
 function start() {
+	// ophalen van input 
 	document.getElementById("form").style.display = "none"
 	name = document.getElementById("name_input").value
 	roomcode = document.getElementById("roomcode_input").value
-	console.log("hello")
+	// joinen van een room
 	connection.send("join," + roomcode + "," + name)
+	// de main loop
 	setInterval(() => {
 		connection.send("get," + roomcode)
-		
 		draw()
-		if (winner) {
-			grid = [[0,0,0],[0,0,0],[0,0,0]]
-			winner = false
-			winarr = []
-			turn = ''
-			sleep(3000).then(()=>{start()})
-		}
+		//if (winner) {
+		//	grid = [[0,0,0],[0,0,0],[0,0,0]]
+		//	winner = false
+		//	winarr = []
+		//	turn = ''
+		//	start()
+		//}
 	}, 1000/30);
 }
+
+// ======================================================
+// ==== drawing =========================================
+// ======================================================
 
 function draw() {
 	canvasContext.clearRect(0,0,400,400)
@@ -110,10 +131,14 @@ function draw() {
 	if (winner) {
 		document.getElementById("message").innerHTML = winner + " heeft gewonnen"
 	}
-	else if (turn) {
+	if (turn) {
 		document.getElementById("message").innerHTML = turn + " is nu aan de beurt"
 	}
 }
+
+// ======================================================
+// ==== updating ========================================
+// ======================================================
 
 window.addEventListener('click', (e) => {
 	if (e.button == 0) {
@@ -133,4 +158,12 @@ function move(x, y) {
 			}
 		}
 	}
+}
+
+// ======================================================
+// ==== other functions =================================
+// ======================================================
+
+function sleep(ms) {
+	return new Promise(resolve => setTimeout(resolve, ms));
 }
