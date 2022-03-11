@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-		<title>Tic Tac Toe</title>
+		<title>Simon</title>
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<link href="/css/style.css" rel="stylesheet">
@@ -9,17 +9,17 @@
 	<body>
 		{{ /modules/header.html }}
 		<div class="main canvas_container">
-			<form action="javascript:void(0);" id="form">
-				name: <input type="text" id="name_input">
-				room: <input type="text" id="roomcode_input">
-				<button onclick="start()" type="submit">start</button>
-			</form>
+			<div class="info_block">
+				<h1>Simon</h1>
+				<p></p>
+			</div>
 			{{ /modules/canvas.html }}
+			<br/>
+			<input type="text" id="name_input">
+			<button onclick="begin()">Begin</button>
 			<script>
-				{{ /tictactoe/main.js }}
+				{{ /simon/main.js }}
 			</script>
-			<h2 id="message"></h2>
-			<div id="winbox"></div>
 		</div>
 	</body>
 </html>

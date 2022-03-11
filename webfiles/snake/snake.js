@@ -6,12 +6,14 @@ const canvas = document.getElementById("canvas")
 const canvasContext = canvas.getContext('2d')
 
 // Andere constanten
-const FPS = 15 
+const FPS = 3
 
 // de naam die de speler heeft ingevoerd voor het spelen (voor highscores)
-var name, gameover, intervalid;
+var name, gameover, intervalid
 
+// 'main' functie die word opgeroepen nadat er op de start knop gedrukt word
 function start() {
+	// haal de naam van de speler op 
     name = document.getElementById('name_input').value
     intervalid = setInterval(() => {
 		// de main loop. dit draait elk frame
@@ -25,23 +27,32 @@ function start() {
 // =======================================================================
 
 function update() {
+	// clear het scherm
     canvasContext.clearRect(0, 0, canvas.width, canvas.height)
+	// beweeg de slang
     snake.move()
+	// check of de slang een appel eet
     eatApple()
+	// check of de slang een muur aanraakt
     checkHit()
 }
 
+// check of de slang een appel eet
 function eatApple() {
+	// check of de positie van het hoofd van de slang gelijk is aan de positie van de appel 
     if(snake.tail[snake.tail.length - 1].x == apple.x &&
         snake.tail[snake.tail.length - 1].y == apple.y){
+			// maak de staart van de slang groter en reset de appel
             snake.tail[snake.tail.length] = {x:apple.x, y:apple.y}
-            apple = new Apple();
+            apple = new Apple()
         }
 }
 
 function checkHit() {
+	// hoofd van de slang
     let headTail = snake.tail[snake.tail.length -1]
 
+	// check of de slang de muur aanraakt, zo ja call gameOver()
     if (headTail.x == - snake.size) {
 		gameOver()
     } else if (headTail.x == canvas.width) {
@@ -76,7 +87,6 @@ function draw() {
 }
 
 function drawGameOver() {
-	console.log("here i am")
     createRect(0,0,canvas.width, canvas.height, "white")
     canvasContext.font = "25px Arial"
     canvasContext.fillStyle = "black"
@@ -94,7 +104,7 @@ function createRect(x,y,width, height,color) {
 // =======================================================================
 
 function gameOver() {
-	var connection = new WebSocket('ws://86.87.226.14:7777');
+	var connection = new WebSocket('ws://86.87.226.14:7777')
 	connection.onopen = () => {
 		connection.send(name + "," + snake.tail.length + ",snake")
 	}
@@ -195,5 +205,5 @@ class Apple{
 }
 
 // creating initial snake and apple
-const snake = new Snake(20,20,20);
-let apple = new Apple();
+const snake = new Snake(20,20,20)
+let apple = new Apple()

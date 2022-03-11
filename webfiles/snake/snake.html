@@ -8,9 +8,12 @@
 	</head>
 	<body>	
 		{{ /modules/header.html }}
-		<div class="main">
+		<div class="main canvas_container">
+			<div class="info_block">
+				<h1>Snake</h1>
+				<p>The classic game of snake, play using the arrow keys.</p>
+			</div>
 			<article>
-				<h1>Snake - Metehan</h1>
 				{{ /modules/canvas.html }}
 				<form action="javascript:void(0);" id="form">
 					<input type="text" id="name_input">
