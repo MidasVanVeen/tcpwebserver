@@ -13,7 +13,7 @@ const BLOCKSIZE = 400/3
 // ==== globale vars ====================================
 // ======================================================
 
-var connection = new WebSocket('ws://127.0.0.1:4444',[])
+var connection = new WebSocket('ws://127.17.0.2:4444',[])
 var name, roomcode, grid, turn, winner, winarr
 
 // ======================================================
