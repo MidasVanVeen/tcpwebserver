@@ -13,7 +13,7 @@ const BLOCKSIZE = 400/3
 // ==== globale vars ====================================
 // ======================================================
 
-var connection = new WebSocket('ws://86.87.226.14:4444',[])
+var connection = new WebSocket('ws://127.0.0.1:4444',[])
 var name, roomcode, grid, turn, winner, winarr
 
 // ======================================================
@@ -73,28 +73,28 @@ function draw() {
 			canvasContext.beginPath()
 			canvasContext.moveTo(0,(winarr[0]-1)*BLOCKSIZE + (BLOCKSIZE/2))
 			canvasContext.lineTo(400,(winarr[0]-1)*BLOCKSIZE + (BLOCKSIZE/2))
-			canvasContext.strokeStyle = "Black"
+			canvasContext.strokeStyle = "white"
 			canvasContext.stroke()
 		}
 		if (winarr[1] != 0) {
 			canvasContext.beginPath()
 			canvasContext.moveTo((winarr[1]-1)*BLOCKSIZE + (BLOCKSIZE/2),0)
 			canvasContext.lineTo((winarr[1]-1)*BLOCKSIZE + (BLOCKSIZE/2),400)
-			canvasContext.strokeStyle = "Black"
+			canvasContext.strokeStyle = "white"
 			canvasContext.stroke()
 		}
 		if (winarr[2] == 1) {
 			canvasContext.beginPath()
 			canvasContext.moveTo(0,0)
 			canvasContext.lineTo(400,400)
-			canvasContext.strokeStyle = "Black"
+			canvasContext.strokeStyle = "white"
 			canvasContext.stroke()
 		}
 		if (winarr[2] == 2) {
 			canvasContext.beginPath()
 			canvasContext.moveTo(400,0)
 			canvasContext.lineTo(0,400)
-			canvasContext.strokeStyle = "Black"
+			canvasContext.strokeStyle = "white"
 			canvasContext.stroke()
 		}
 		canvasContext.beginPath()
@@ -109,22 +109,22 @@ function draw() {
 				canvasContext.lineTo(n*BLOCKSIZE + (BLOCKSIZE - 25), i*BLOCKSIZE + (BLOCKSIZE - 25))
 				canvasContext.moveTo(n*BLOCKSIZE + (BLOCKSIZE - 25), i*BLOCKSIZE + 25)
 				canvasContext.lineTo(n*BLOCKSIZE + 25, i*BLOCKSIZE + (BLOCKSIZE - 25))
-				canvasContext.strokeStyle = "Black"
+				canvasContext.strokeStyle = "white"
 				canvasContext.stroke()
 			}
 			else if (grid[i][n] == 'O') {
 				// canvasContext.fillStyle = "red"
 				canvasContext.beginPath()
 				canvasContext.arc(n*BLOCKSIZE + (BLOCKSIZE/2), i*BLOCKSIZE + (BLOCKSIZE/2), (BLOCKSIZE/2) - 25, 0, 2 * Math.PI)
-				canvasContext.strokeStyle = "Black"
+				canvasContext.strokeStyle = "white"
 				canvasContext.stroke()
 			}
 			else {
-				// canvasContext.fillStyle = "black"
+				// canvasContext.fillStyle = "white"
 			}
 			canvasContext.beginPath()
 			canvasContext.rect(n*BLOCKSIZE,i*BLOCKSIZE,BLOCKSIZE,BLOCKSIZE)
-			canvasContext.strokeStyle = "Black"
+			canvasContext.strokeStyle = "white"
 			canvasContext.stroke()
 		}
 	}

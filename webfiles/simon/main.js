@@ -77,6 +77,7 @@ function verstuurHighscore() {
 	var conn = new WebSocket('ws://127.0.0.1:7777')
 	conn.onopen = () => {
 		conn.send(name + "," + score + ",simon")
+		score = 1
 	}
 }
 
@@ -183,7 +184,7 @@ function activateButton(index) {
 			alert("GAMEOVER, score: " + score)
 			verstuurHighscore();
 			pointer = 0
-			score = 1
+
 			playerbeurt = false
 			computerbeurt = true
 			correcteKnoppen = []
