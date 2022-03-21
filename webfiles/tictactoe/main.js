@@ -131,7 +131,7 @@ function draw() {
 	if (winner) {
 		document.getElementById("message").innerHTML = winner + " heeft gewonnen"
 	}
-	if (turn) {
+	else if (turn) {
 		document.getElementById("message").innerHTML = turn + " is nu aan de beurt"
 	}
 }
