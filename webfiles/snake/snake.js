@@ -6,7 +6,7 @@ const canvas = document.getElementById("canvas")
 const canvasContext = canvas.getContext('2d')
 
 // Andere constanten
-const FPS = 3
+const FPS = 10 
 
 // de naam die de speler heeft ingevoerd voor het spelen (voor highscores)
 var name, gameover, intervalid
